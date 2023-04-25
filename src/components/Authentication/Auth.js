@@ -1,9 +1,11 @@
-import React, { useRef } from "react";
+import React, { useRef} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "../store/auth-slice";
+import { authActions } from "../../store/auth-slice";
 import classes from './Auth.module.css'
+import { useHistory } from "react-router-dom";
 
 const Auth = () => {
+  const history = useHistory()
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.auth.haveAccount);
   const emailRef = useRef("");
@@ -20,40 +22,41 @@ const Auth = () => {
     if (!isLoggedIn) {
       try {
         const response = await fetch(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA4kjI5pHTqGWrGqWJnOqruOzCFA-GuP2c",
+          "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyC9wPSRuUS2GTLr1XB7P-MenNJv0kqkCmA",
           {
-            method: "Post",
+            method: "POST",
             body: JSON.stringify({
               email: enteredEmail,
               password: enteredPassword,
               returnSecureToken: true,
             }),
             headers: {
-              "Content-Text": "application/json",
+              "Content-Type": "application/json",
             },
           }
         );
+        console.log(response)
         if (!response.ok) {
           let errorMessage = "Authenticated Signup Failed";
           throw new Error(errorMessage);
         }
         alert("Your Account Has Been Created You can Login Now");
       } catch (err) {
-        alert(err);
+        alert(err.messaage);
       }
     } else {
       try {
         const response = await fetch(
-          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA4kjI5pHTqGWrGqWJnOqruOzCFA-GuP2c",
+          "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyC9wPSRuUS2GTLr1XB7P-MenNJv0kqkCmA",
           {
-            method: "Post",
+            method: "POST",
             body: JSON.stringify({
               email: enteredEmail,
               password: enteredPassword,
               returnSecureToken: true,
             }),
             headers: {
-              "Content-Text": "application/json",
+              "Content-Type": "application/json",
             },
           }
         );
@@ -62,9 +65,13 @@ const Auth = () => {
           throw new Error(errorMessage);
         }
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         const email = enteredEmail.replace("@", "").replace(".", "");
         dispatch(authActions.logIn({ token: data.idToken, email: email }));
+        alert('You have Successfully login')
+        localStorage.setItem('email', email)
+        localStorage.setItem('token', data.idToken)
+        history.replace('/')
       } catch (err) {
         alert(err);
       }
@@ -72,31 +79,9 @@ const Auth = () => {
     emailRef.current.value = "";
     passwordRef.current.value = "";
   };
-
-  const forgotPasswordHandler = async () => {
-    const enteredEmail = emailRef.current.value;
-    try {
-      const response = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyA4kjI5pHTqGWrGqWJnOqruOzCFA-GuP2c",{
-            method: 'Post',
-            body: JSON.stringify({
-                requestType: "PASSWORD_RESET",
-                email: enteredEmail
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
-      );
-      if(!response.ok){
-        let errorMessage = 'Fail to Send Request'
-        throw new Error(errorMessage)
-      }
-      alert('Password Reset Link is sent, please check your mail')
-    } catch (err) {
-      alert(err);
-    }
-  };
+  const ForgotPasswordHandler = () => {
+    history.replace('/forgot')
+  }
   return ( <div>
     <div className={classes.auth}>
       <h1>{isLoggedIn ? "Login" : "SignUp"}</h1>
@@ -113,10 +98,8 @@ const Auth = () => {
           <button type="submit">{isLoggedIn ? "Login" : "SignUp"}</button>
         </div>
         <div className={classes.actions}>
-          {isLoggedIn && (
-            <button type="button" onClick={forgotPasswordHandler}>
-              Forgot Password
-            </button>
+        {isLoggedIn && (
+            <button onClick={ForgotPasswordHandler}>Forgot Password?</button>
           )}
         </div>
       </form>

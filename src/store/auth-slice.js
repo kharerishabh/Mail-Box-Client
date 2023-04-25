@@ -10,7 +10,7 @@ const authSlice = createSlice({
   },
   reducers: {
     logIn(state, action) {
-      state.isAuthenticated = false
+      state.isAuthenticated = true
       state.email = action.payload.email;
       state.token = action.payload.token;
     },
