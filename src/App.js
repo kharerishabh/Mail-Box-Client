@@ -1,9 +1,10 @@
 import './App.css';
+import Auth from './components/Auth';
 
 function App() {
   return (
-    <div className="App">
-    <h1>Mail-Box-Client</h1>
+    <div>
+      <Auth/>
     </div>
   );
 }
