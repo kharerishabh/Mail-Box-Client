@@ -66,11 +66,10 @@ const Auth = () => {
         }
         const data = await response.json();
         // console.log(data);
-        const email = enteredEmail.replace("@", "").replace(".", "");
-        dispatch(authActions.logIn({ token: data.idToken, email: email }));
+        dispatch(authActions.logIn({ token: data.idToken, email: enteredEmail }));
         alert('You have Successfully login')
-        localStorage.setItem('email', email)
-        localStorage.setItem('token', data.idToken)
+        // localStorage.setItem('email', email)
+        // localStorage.setItem('token', data.idToken)
         history.replace('/')
       } catch (err) {
         alert(err);

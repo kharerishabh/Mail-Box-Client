@@ -6,27 +6,36 @@ const ComposeMail = () => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.ui.show);
   const email = useSelector((state) => state.auth.email);
+  const senderMail = email.replace('@', '').replace('.', '')
   const emailRef = useRef("");
   const subjectRef = useRef("");
   const mailBodyRef = useRef("");
 
   const composeMailHandler = async (event) => {
     event.preventDefault();
-    const emailData = emailRef.current.value.replace("@", "").replace(".", "");
-    const mailData = {
+    const receivedMail = emailRef.current.value.replace("@", "").replace(".", "");
+    const receivedMailData = {
       sender: email,
       subject: subjectRef.current.value,
       body: mailBodyRef.current.value,
     };
+    const senderMailData = {
+        sender: emailRef.current.value,
+        subject: subjectRef.current.value,
+        body: mailBodyRef.current.value
+    }
     try {
-      const response = await fetch(
-        `https://mail-box-client-212c3-default-rtdb.firebaseio.com/${emailData}.json`, {
+      await fetch(
+        `https://mail-box-client-212c3-default-rtdb.firebaseio.com/rec${receivedMail}.json`, {
 
         method: 'POST',
-        body: JSON.stringify(mailData),
+        body: JSON.stringify(receivedMailData),
         });
+        await fetch(`https://mail-box-client-212c3-default-rtdb.firebaseio.com/sent${senderMail}.json`, {
+            method: 'POST',
+            body: JSON.stringify(senderMailData)
+        })
         dispatch(uiActions.handleShow())
-        console.log(response)
     } catch (err) {
       alert(err);
     }
