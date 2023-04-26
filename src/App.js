@@ -1,4 +1,4 @@
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 import Auth from "./components/Authentication/Auth";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
@@ -38,10 +38,12 @@ function App() {
           <ForgotPassword />
         </Route>
         <Route path='/inbox'>
-          <Inbox/>
+          {isAuthenticated && <Inbox/>}
+          {!isAuthenticated && <Redirect to='/'/>}
         </Route>
         <Route path='/sent'>
-          <SentMail/>
+          {isAuthenticated && <SentMail/>}
+          {!isAuthenticated && <Redirect to='/'/>}
         </Route>
       </Switch>
     </div>

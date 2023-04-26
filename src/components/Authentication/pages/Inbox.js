@@ -6,7 +6,7 @@ import ViewMail from "./ViewMail";
 
 const Inbox = () => {
   const dispatch = useDispatch();
-  const receivedMail = useSelector((state) => state.mail.receivedMail);
+  const {receivedMail, changed} = useSelector((state) => state.mail);
   const senderMail = useSelector((state) => state.auth.email);
   const email = senderMail.replace("@", "").replace(".", "");
 
@@ -20,7 +20,7 @@ const Inbox = () => {
     );
     dispatch(mailAction.viewMailHandle({ id: mail.id }));
   };
-  const fetchMailHandler = async () => {
+  const fetchReceivedMail = async () => {
     try {
       const response = await fetch(
         `https://mail-box-client-212c3-default-rtdb.firebaseio.com/rec${email}.json`
@@ -35,15 +35,15 @@ const Inbox = () => {
         newData.push({ id: key, ...data[key] });
       }
       dispatch(mailAction.updateReceivedMail({ mail: newData }));
-    //   console.log(newData);
+       console.log(newData);
     } catch (err) {
       alert(err);
     }
   };
 
   useEffect(() => {
-    fetchMailHandler();
-  }, []);
+    fetchReceivedMail();
+  }, [changed]);
 
   return (
     <Card>
@@ -69,7 +69,7 @@ const Inbox = () => {
               <td>
                 <Button variant="success" onClick={() => viewMailHandler(mail)}>View</Button>
               </td>
-              <ViewMail message={mail.body}/>
+              <ViewMail mail={mail} email={email} type={'recevied'}/>
             </tr>
           ))}
         </tbody>
