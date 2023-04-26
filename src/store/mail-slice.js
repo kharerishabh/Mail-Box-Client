@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const mailSlice = createSlice({
     name: 'mail',
-    initialState: {receivedMail: [], sentMail: []},
+    initialState: {receivedMail: [], sentMail: [], viewMail: false},
     reducers: {
         updateReceivedMail (state, action) {
             state.receivedMail = action.payload.mail
@@ -13,6 +13,15 @@ const mailSlice = createSlice({
         deleteReceivedMail (state, action) {
             const id = action.payload.id
             state.receivedMail = state.receivedMail.filter((mail) => mail.id !== id)
+        },
+        viewMailHandle (state, action) {
+            const newId = action.payload.id
+            const index = state.receivedMail.findIndex((mail) => mail.id === newId)
+            state.receivedMail[index].isRead = true
+            state.viewMail = !state.viewMail 
+        },
+        mailHandle (state) {
+            state.viewMail = !state.viewMail
         }
     }
 })

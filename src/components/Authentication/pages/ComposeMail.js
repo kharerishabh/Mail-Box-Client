@@ -18,6 +18,7 @@ const ComposeMail = () => {
       sender: email,
       subject: subjectRef.current.value,
       body: mailBodyRef.current.value,
+      idRead: false
     };
     const senderMailData = {
         sender: emailRef.current.value,
