@@ -2,8 +2,10 @@ import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, Form } from "react-bootstrap";
 import { uiActions } from "../../../store/ui-slice";
+import useHttp from "../../../hooks/use-http";
 const ComposeMail = () => {
   const dispatch = useDispatch();
+  const {sendRequest} = useHttp()
   const show = useSelector((state) => state.ui.show);
   const email = useSelector((state) => state.auth.email);
   const senderMail = email.replace('@', '').replace('.', '')
@@ -11,7 +13,7 @@ const ComposeMail = () => {
   const subjectRef = useRef("");
   const mailBodyRef = useRef("");
 
-  const composeMailHandler = async (event) => {
+  const composeMailHandler = (event) => {
     event.preventDefault();
     const receivedMail = emailRef.current.value.replace("@", "").replace(".", "");
     const receivedMailData = {
@@ -25,21 +27,32 @@ const ComposeMail = () => {
         subject: subjectRef.current.value,
         body: mailBodyRef.current.value
     }
-    try {
-      await fetch(
-        `https://mail-box-client-212c3-default-rtdb.firebaseio.com/rec${receivedMail}.json`, {
+    sendRequest({
+      url: `https://mail-box-client-212c3-default-rtdb.firebaseio.com/rec${receivedMail}.json`,
+      method: 'POST',
+      body: receivedMailData
+    })
+    sendRequest({
+      url: `https://mail-box-client-212c3-default-rtdb.firebaseio.com/sent${senderMail}.json`,
+      method: 'POST',
+      body: senderMailData
+    })
+    alert('Mail Sent')
+    // try {
+    //   await fetch(
+    //     `https://mail-box-client-212c3-default-rtdb.firebaseio.com/rec${receivedMail}.json`, {
 
-        method: 'POST',
-        body: JSON.stringify(receivedMailData),
-        });
-        await fetch(`https://mail-box-client-212c3-default-rtdb.firebaseio.com/sent${senderMail}.json`, {
-            method: 'POST',
-            body: JSON.stringify(senderMailData)
-        })
-        dispatch(uiActions.handleShow())
-    } catch (err) {
-      alert(err);
-    }
+    //     method: 'POST',
+    //     body: JSON.stringify(receivedMailData),
+    //     });
+    //     await fetch(`https://mail-box-client-212c3-default-rtdb.firebaseio.com/sent${senderMail}.json`, {
+    //         method: 'POST',
+    //         body: JSON.stringify(senderMailData)
+    //     })
+    //     dispatch(uiActions.handleShow())
+    // } catch (err) {
+    //   alert(err);
+    // }
   };
   return (
     <Modal show={show} onHide={() => dispatch(uiActions.handleShow())}>
