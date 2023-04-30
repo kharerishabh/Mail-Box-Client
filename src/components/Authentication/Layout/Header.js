@@ -1,6 +1,6 @@
 import React from "react";
 import classes from "./Header.module.css";
-import { Link } from "react-router-dom";
+import { Link, Outlet} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../../store/ui-slice";
 import ComposeMail from "../pages/ComposeMail";
@@ -21,14 +21,13 @@ const Header = () => {
     <header className={classes.header}>
       <h1 className={classes['header-title']}>Mailbox</h1>
       <div>
-        {/* <Link to='/compose'>Compose</Link> */}
         <button onClick={() => dispatch(uiActions.handleShow())}>Compose</button>
       </div>
       <div className={classes.actions}>
-        <Link to='/inbox'>Inbox</Link>
+        <Link to='inbox'>Inbox</Link>
       </div>
       <div className={classes.actions}>
-        <Link to='/sent'>Sent Mail</Link>
+        <Link to='sent'>Sent Mail</Link>
       </div>
       <div className={classes.actions}>
         <h6>Mail</h6>
@@ -36,6 +35,7 @@ const Header = () => {
       </div>
     </header>
     <ComposeMail/>
+    <Outlet/>
   </main>);
 };
 

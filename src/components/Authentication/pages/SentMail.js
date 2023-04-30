@@ -28,7 +28,7 @@ const SentMail = () => {
       },
       transFormData
     );
-  }, [sendRequest, dispatch, email])
+  }, [sendRequest, changed, dispatch, email])
   // const fetchSentMail = async () => {
   //   try {
   //     const response = await fetch(

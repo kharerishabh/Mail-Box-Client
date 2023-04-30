@@ -31,7 +31,7 @@ useEffect(() => {
   sendRequest({
     url: `https://mail-box-client-212c3-default-rtdb.firebaseio.com/rec${email}.json`
   }, transFormData)
-}, [sendRequest])
+}, [sendRequest, changed, dispatch, email])
 
   // const viewMailHandler = async (mail) => {
   //   await fetch(

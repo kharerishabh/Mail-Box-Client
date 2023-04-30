@@ -2,11 +2,9 @@ import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { mailAction } from "../../../store/mail-slice";
-import {useHistory} from 'react-router-dom'
 import useHttp from "../../../hooks/use-http";
 
 const ViewMail = (props) => {
-  const history = useHistory()
   const {sendRequest} = useHttp()
   const dispatch = useDispatch();
   const viewMail = useSelector((state) => state.mail.viewMail);
@@ -38,8 +36,6 @@ const ViewMail = (props) => {
     // }else{
     //     dispatch(mailAction.deleteSentMail(props.mail.id))
     // }
-    // history.replace('/')
-
   }
 
   return (
